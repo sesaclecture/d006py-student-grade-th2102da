@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import csv
+import math
 
 
 def load_from_csv(filepath):
@@ -19,15 +20,30 @@ def load_from_csv(filepath):
 
         for row in csv_reader:
             student_scores[row[0]] = row[1:]
-    return student_scores, header[1:]
+    return student_scores, header[1:] # student_scores 는 딕셔너리 ( 이름 : 점수) , header[1:] 은 과목명 [ ] 리스트
 
 
 def subject_average(student_scores: dict, subjects: list):
+    
+    avg = {}
+    
     """
     이 반의 각 과목별 평균을 구해서 딕셔너리로 반환
     예) {"국어": 80.8, "수학": 35.3, "영어": 96.6, "과학": 85.3, "사회": 38.8}
     """
-    pass
+    # 과목별 반복
+    for i, subject in enumerate(subjects):
+        total = 0
+        count = 0
+
+        # 각 학생의 점수 합산
+        for scores in student_scores.values():
+            total += int(scores[i])
+            count += 1
+        
+        avg[subject] = round(total / count, 2)
+    return avg
+    
 
 
 def student_average(student_scores: dict):
@@ -35,7 +51,20 @@ def student_average(student_scores: dict):
     각 학생별 전과목 평균 점수를 정렬된 튜플의 리스트로 반환
     예) [("이영희", 89.8), ("김철수", 86.6), ("박민수", 84.8)]
     """
-    pass
+    averages = []
+
+    for name, scores in student_scores.items():
+        # 문자열 점수 → 정수로 변환 후 평균 계산
+        avg_score = round(sum(map(int, scores)) / len(scores), 1)
+        averages.append((name, avg_score))
+
+    # 평균 기준 내림차순 정렬
+    averages.sort(key=lambda x: x[1], reverse=True)
+
+
+
+
+    return averages
 
 
 if __name__ == "__main__":
